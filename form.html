@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>企画を追加</title>
+  <style>
+    body { font-family: sans-serif; background-color: #ffffff; margin:0; padding:0; position:relative; min-height:100vh; }
+    .cube { position: absolute; width: 60px; height: 60px; background-color: #f9e79f; border-radius:4px; opacity:0.7; }
+    .cube:nth-child(1) { top:20px; left:20px; }
+    .cube:nth-child(2) { top:50px; right:40px; }
+    .cube:nth-child(3) { bottom:60px; left:60px; }
+    .cube:nth-child(4) { bottom:30px; right:80px; }
+
+    .form-container { max-width:500px; margin:100px auto; padding:30px; background-color: rgba(255,255,255,0.9); border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); position:relative; z-index:10; }
+    label { display:block; margin-top:15px; font-weight:bold; color:#333; }
+    input { width:100%; padding:10px; margin-top:5px; border:1px solid #ccc; border-radius:6px; font-size:16px; }
+    button { margin-top:20px; padding:12px 20px; background-color:#f9e79f; border:none; border-radius:6px; cursor:pointer; font-weight:bold; color:#333; transition:0.3s; }
+    button:hover { background-color:#f7d97e; }
+  </style>
+</head>
+<body>
+<div class="cube"></div>
+<div class="cube"></div>
+<div class="cube"></div>
+<div class="cube"></div>
+
+<div class="form-container">
+  <h1>企画を追加</h1>
+  <form id="plan-form">
+    <label>企画：<input type="text" id="title" required></label>
+    <label>URL：<input type="url" id="url" required></label>
+    <button type="submit">保存する</button>
+  </form>
+</div>
+
+<script>
+const API_BASE = "https://your-api.netlify.app"; 
+
+document.getElementById("plan-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const title = document.getElementById("title").value;
+  const url = document.getElementById("url").value;
+
+  await fetch(`${API_BASE}/add`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ title, url })
+  });
+
+  window.location.href = "index.html";
+});
+</script>
+</body>
+</html>

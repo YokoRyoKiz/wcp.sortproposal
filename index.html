@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>企画リンク一覧</title>
+  <style>
+    body { font-family: sans-serif; background-color: #ffffff; padding: 20px; position: relative; min-height: 100vh; }
+    a { margin-right: 10px; }
+    button { color: red; cursor: pointer; }
+    h1 { text-align: center; }
+
+    /* 背景キューブ */
+    .cube { position: absolute; width: 60px; height: 60px; background-color: #f9e79f; border-radius: 4px; opacity: 0.7; }
+    .cube:nth-child(1) { top: 20px; left: 20px; }
+    .cube:nth-child(2) { top: 50px; right: 40px; }
+    .cube:nth-child(3) { bottom: 60px; left: 60px; }
+    .cube:nth-child(4) { bottom: 30px; right: 80px; }
+
+    .list-container { max-width: 600px; margin: 100px auto; background-color: rgba(255,255,255,0.9); padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index:10; }
+    .item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="cube"></div>
+<div class="cube"></div>
+<div class="cube"></div>
+<div class="cube"></div>
+
+<h1>企画リンク一覧</h1>
+
+<div class="list-container" id="link-list">
+  読み込み中...
+</div>
+
+<hr style="max-width:600px; margin: auto;">
+<div style="text-align:center; margin-top:20px;">
+  <a href="form.html">新しい企画を追加する</a>
+</div>
+
+<script>
+const API_BASE = "https://your-api.netlify.app"; // ←Netlify FunctionsのURLに置き換え
+
+async function loadData() {
+  const res = await fetch(`${API_BASE}/list`);
+  const data = await res.json();
+  const list = document.getElementById("link-list");
+  list.innerHTML = "";
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <a href="${item.url}" target="_blank">${item.title}</a>
+      <button onclick="deleteItem('${item.id}')">削除</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+async function deleteItem(id) {
+  if (!confirm("本当に削除しますか？")) return;
+  await fetch(`${API_BASE}/delete`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ id })
+  });
+  loadData();
+}
+
+loadData();
+</script>
+</body>
+</html>
